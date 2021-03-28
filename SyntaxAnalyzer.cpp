@@ -9,7 +9,7 @@ void SyntaxAnalyzer::Push(string tok, string lex)
   Tokens currToken;
   currToken.lex = lex;
   currToken.tok = tok;
-  // cout << "Lex: " << lex << " Token: " << tok << endl;
+  // fout << "Lex: " << lex << " Token: " << tok << endl;
   tokenLists.push_back(currToken);
 }
 
@@ -26,74 +26,137 @@ bool SyntaxAnalyzer::IsEmpty()
   return tokenLists.empty();
 }
 
-void SyntaxAnalyzer::PrintAll()
+void SyntaxAnalyzer::PrintAll(ofstream &fout)
 {
-  cout << tokenLists.size() << endl;
+  fout << tokenLists.size() << endl;
   list<Tokens>::iterator it;
   for(it = tokenLists.begin(); it != tokenLists.end(); it++)
   {
-    cout << it->tok << "\t" << it->lex << endl;
+    fout << it->tok << "\t" << it->lex << endl;
   }
+  fout << endl;
 }
 
-void SyntaxAnalyzer::GrammarCheck()
+void SyntaxAnalyzer::GrammarCheck(ofstream &fout)
 {
   bool declarative;
 
-  declarative = D();
+  declarative = D(fout);
   if(declarative)
   {
-    cout << "Yes. It's a declarative statement\n\n";
+    fout << "Yes. It's a declarative statement\n\n";
   }
   else
   {
-    cout << "No, it's not a declarative statement\n\n";
+    fout << "No, it's not a declarative statement\n\n";
     return;
   }
 }
 
-bool SyntaxAnalyzer::D()
+Tokens SyntaxAnalyzer::PopAndGetNextToken(ofstream &fout)
+{
+  //Pop the already examined element of the list
+  tokenLists.pop_front();
+  if(!IsEmpty())
+  {
+    //Examine the next element
+    return tokenLists.front();
+  }
+  else
+  {
+    fout << "Can't pop an empty list\n";
+    fout << "The program will be terminated\n\n";
+    exit(5);
+  }
+}
+
+/*******************************************************************************
+ * The following methods D, DPrime, and Type are representing the productions:
+ *  <D>       -> <Type> id <DPrime> ; | epsilon
+ *  <DPrime>  -> , id <DPrime> | epsilon
+ ******************************************************************************/
+bool SyntaxAnalyzer::D(ofstream &fout)
 {
   Tokens currToken;
-  bool   isDeclarative;
+  // bool   isDeclarative;
   string lex;
   string tok;
 
-  isDeclarative = false;
+  // isDeclarative = false;
   currToken = tokenLists.front();
   lex = currToken.lex;
   tok = currToken.tok;
-  if(T(lex))
+  if(Type(lex))
   {
-    cout << "Token: " << tok << '\t' << "Lexeme: " << lex << endl;
-    cout << "<Statement> -> <Declarative>" << endl;
-    cout << "<Type> -> bool | float | int | double | string | char" << endl;
-
-    currToken = PopAndGetNextToken();
+    fout << "Token: " << tok << '\t' << "Lexeme: " << lex << endl;
+    fout << "<Statement> -> <Declarative>" << endl;
+    fout << "<Type> -> bool | float | int | double | string | char" << endl;
+    //Pop the token <Type> of the list and get the next token
+    currToken = PopAndGetNextToken(fout);
     lex = currToken.lex;
     tok = currToken.tok;
     if(tok == "Identifier")
     {
-      cout << "Token: " << tok << '\t' << "Lexeme: " << lex << endl;
-      currToken = PopAndGetNextToken();
-      if(currToken.lex == ";")
+      fout << "Token: " << tok << '\t' << "Lexeme: " << lex << endl;
+      //Pop the token <ID> of the list and get the next token
+      currToken = PopAndGetNextToken(fout);
+      lex = currToken.lex;
+      tok = currToken.tok;
+      if(DPrime(tok, lex, fout))
       {
-        lex = currToken.lex;
-        tok = currToken.tok;
-        cout << "Token: " << tok << '\t' << "Lexeme: " << lex << endl;
-        isDeclarative = true;
+        lex = tokenLists.front().lex;
+        if(lex == ";")
+        {
+          tokenLists.pop_front();
+          return true;
+        }
       }
     }
     else
     {
-      cout << "Wrong syntax" << endl;
       return false;
     }
   }
-  return isDeclarative;
+  else
+  {
+    return false;
+  }
 }
 
-bool SyntaxAnalyzer::T(string type)
+bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
+{
+  Tokens currToken;
+  string tok;
+  string lex;
+  if(curLex == ",")
+  {
+    fout << "Token: " << curTok << '\t' << "Lexeme: " << curLex << endl;
+    fout << "<D_Prime> -> <,> <I> <D_Prime> | epsilon" << endl;
+    currToken = PopAndGetNextToken(fout);
+    lex = currToken.lex;
+    tok = currToken.tok;
+    if(tok == "Identifier")
+    {
+      fout << "Token: " << tok << '\t' << "Lexeme: " << lex << endl;
+      currToken = PopAndGetNextToken(fout);
+      lex = currToken.lex;
+      tok = currToken.tok;
+      return DPrime(tok, lex, fout);
+    }
+    else
+    {
+      fout << "Invalid syntax!\n";
+      fout << "The program will be terminated\n\n";
+      exit(5);
+    }
+  }
+  else
+  {
+    return true;
+  }
+}
+
+bool SyntaxAnalyzer::Type(string type)
 {
   if(type == "bool" || type == "float" || type == "int" || type == "double" ||
      type == "string" || type == "char")
@@ -106,10 +169,14 @@ bool SyntaxAnalyzer::T(string type)
   }
 }
 
-Tokens SyntaxAnalyzer::PopAndGetNextToken()
-{
-  //Pop the already examined element of the list
-  tokenLists.pop_front();
-  //Examine the next element
-  return tokenLists.front();
-}
+/***************************************************************************
+ * The following methods E, EPrime, T, TPrime, F, and id are representing
+ * the productions of:
+ *  <E>       -> <T> <EPrime>
+ *  <EPrime>  -> + <T> <EPrime> | - <T> <EPrime> |epsilon
+ *  <T>       -> <F> <TPrime>
+ *  <TPrime>  -> * <F> <TPrime> | / <F> <TPrime> | epsilon
+ *  <F>       -> ( <E> ) | i | num
+ *  i         -> id
+ **************************************************************************/
+ 

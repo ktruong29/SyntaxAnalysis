@@ -1,4 +1,15 @@
 Token: Keyword	Lexeme: int
-Token: Keyword	Lexeme: float
+<Statement> -> <Declarative>
+<Type> -> bool | float | int | double | string | char
 Token: Identifier	Lexeme: num1
-Token: Separator	Lexeme: ;
+Token: Separator	Lexeme: ,
+<D_Prime> -> <,> <I> <D_Prime> | epsilon
+Token: Identifier	Lexeme: num2
+Yes. It's a declarative statement
+
+Token: Keyword	Lexeme: bool
+<Statement> -> <Declarative>
+<Type> -> bool | float | int | double | string | char
+Token: Identifier	Lexeme: found
+Yes. It's a declarative statement
+

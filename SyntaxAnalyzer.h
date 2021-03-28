@@ -22,12 +22,29 @@ class SyntaxAnalyzer
     void Push(string tok, string lex);
     void Pop();
     bool IsEmpty();
-    void PrintAll();
-    void GrammarCheck();
+    void PrintAll(ofstream &fout);
+    void GrammarCheck(ofstream &fout);
 
   private:
     list<Tokens> tokenLists;
-    bool D();     //Declarative
-    bool T(string type);  //Type
-    Tokens PopAndGetNextToken();
+    Tokens PopAndGetNextToken(ofstream &fout);
+    /***************************************************************************
+     * The following methods D, DPrime, and Type are representing the productions:
+     *  <D>       -> <Type> id <DPrime> ; | epsilon
+     *  <DPrime>  -> , id <DPrime> | epsilon
+     **************************************************************************/
+    bool D(ofstream &fout);     //Declarative
+    bool DPrime(string curTok, string curLex, ofstream &fout);
+    bool Type(string type);  //Type
+    /***************************************************************************
+     * The following methods E, EPrime, T, TPrime, F, and id are representing
+     * the productions of:
+     *  <E>       -> <T> <EPrime>
+     *  <EPrime>  -> + <T> <EPrime> | - <T> <EPrime> |epsilon
+     *  <T>       -> <F> <TPrime>
+     *  <TPrime>  -> * <F> <TPrime> | / <F> <TPrime> | epsilon
+     *  <F>       -> ( <E> ) | i | num
+     *  i         -> id
+     **************************************************************************/
+
 };

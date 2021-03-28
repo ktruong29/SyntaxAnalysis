@@ -125,33 +125,34 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
           //Comparing keywords vs. identifiers
           if(IsKeyword(lex))
           {
-            fout << "Token: Keyword" <<  "\t" << "Lexeme: " << lex << endl;
+            // fout << "Token: Keyword" <<  "\t" << "Lexeme: " << lex << endl;
             synAnalyzer.Push("Keyword", lex);
           }
           else
           {
-            fout << "Token: Identifier" <<  "\t" << "Lexeme: " << lex << endl;
+            // fout << "Token: Identifier" <<  "\t" << "Lexeme: " << lex << endl;
             synAnalyzer.Push("Identifier", lex);
           }
           //Comparing the current character in the buffer (operator or separator?)
           if(IsSeparator(c))
           {
-            fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
+            // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
             sep += c;
             synAnalyzer.Push("Separator", sep);
             sep = "";
           }
           else if(IsOperator(c))
           {
-            fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
+            // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
             op += c;
             synAnalyzer.Push("Operator", op);
             op = "";
           }
-          if(c == ';')
-          {
-            synAnalyzer.GrammarCheck();
-          }
+          // if(c == ';')
+          // {
+          //   // synAnalyzer.PrintAll();
+          //   synAnalyzer.GrammarCheck();
+          // }
           //Clear the string buffer for the next input
           lex = "";
           state = 0;
@@ -159,6 +160,11 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
         case 3: //Example: num%, num^
           // cout << "Unknow lexeme: " << lex << c << endl;
+          if(c == '\n' && !synAnalyzer.IsEmpty())
+          {
+            synAnalyzer.GrammarCheck(fout);
+            // synAnalyzer.PrintAll();
+          }
           lex = "";
           state = 0;
             break;
@@ -169,27 +175,27 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
             break;
 
         case 5:
-          fout << "Token: Integer" <<  "\t" << "Lexeme: " << lex << endl;
+          // fout << "Token: Integer" <<  "\t" << "Lexeme: " << lex << endl;
           synAnalyzer.Push("Integer", lex);
           //Comparing the current character in the buffer (operators or separators?)
           if(IsSeparator(c) && c != '.')
           {
-            fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
+            // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
             sep += c;
             synAnalyzer.Push("Separator", sep);
             sep = "";
           }
           else if(IsOperator(c))
           {
-            fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
+            // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
             op += c;
             synAnalyzer.Push("Operator", op);
             op = "";
           }
-          if(c == ';')
-          {
-            synAnalyzer.GrammarCheck();
-          }
+          // if(c == ';')
+          // {
+          //   synAnalyzer.GrammarCheck();
+          // }
           lex = "";
           state = 0;
             break;
@@ -201,32 +207,32 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
         //Real, float numbers
         case 7:
-          fout << "Token: Real" <<  "\t" << "Lexeme: " << lex << endl;
+          // fout << "Token: Real" <<  "\t" << "Lexeme: " << lex << endl;
           synAnalyzer.Push("Real", lex);
           if(IsSeparator(c))
           {
-            fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
+            // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
             sep += c;
             synAnalyzer.Push("Separator", sep);
             sep = "";
           }
           else if(IsOperator(c))
           {
-            fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
+            // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
             op += c;
             synAnalyzer.Push("Operator", op);
             op = "";
           }
-          if(c == ';')
-          {
-            synAnalyzer.GrammarCheck();
-          }
+          // if(c == ';')
+          // {
+          //   synAnalyzer.GrammarCheck();
+          // }
           lex = "";
           state = 0;
             break;
 
         case 8:
-          fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
+          // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
           op += c;
           synAnalyzer.Push("Operator", op);
           op = "";
@@ -234,14 +240,14 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
             break;
 
         case 9:
-          fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
+          // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
           sep += c;
           synAnalyzer.Push("Separator", sep);
           sep = "";
-          if(c == ';')
-          {
-            synAnalyzer.GrammarCheck();
-          }
+          // if(c == ';')
+          // {
+          //   synAnalyzer.GrammarCheck();
+          // }
           state = 0;
             break;
 
