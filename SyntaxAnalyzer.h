@@ -26,6 +26,7 @@ class SyntaxAnalyzer
     void GrammarCheck(ofstream &fout);
 
   private:
+    bool flag;
     list<Tokens> tokenLists;
     Tokens PopAndGetNextToken(ofstream &fout);
     /***************************************************************************
@@ -46,5 +47,14 @@ class SyntaxAnalyzer
      *  <F>       -> ( <E> ) | i | num
      *  i         -> id
      **************************************************************************/
-
+     bool E(ofstream &fout);
+     bool EPrime(ofstream &fout);
+     bool T(ofstream &fout);
+     bool TPrime(ofstream &fout);
+     bool F(ofstream &fout);
+     /***************************************************************************
+      * The following methods A representing the productions:
+      *  <A>       -> id = <E> ;
+      **************************************************************************/
+    bool A(ofstream &fout);
 };

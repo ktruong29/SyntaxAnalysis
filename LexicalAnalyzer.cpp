@@ -162,8 +162,8 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
           // cout << "Unknow lexeme: " << lex << c << endl;
           if(c == '\n' && !synAnalyzer.IsEmpty())
           {
+            // synAnalyzer.PrintAll(fout);
             synAnalyzer.GrammarCheck(fout);
-            // synAnalyzer.PrintAll();
           }
           lex = "";
           state = 0;

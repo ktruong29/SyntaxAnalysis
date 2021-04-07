@@ -1,2 +1,3 @@
+double avg;
 int num1, num2;
-bool found;
+avg = (num1 + num2)/2;
