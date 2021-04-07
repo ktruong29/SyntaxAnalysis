@@ -53,10 +53,11 @@ void SyntaxAnalyzer::GrammarCheck(ofstream &fout)
   {
     fout << "It's an assignment statement\n\n";
   }
-  else
-  {
-    fout << "Idk what's wrong\n\n";
-  }
+
+  // else
+  // {
+  //   fout << "Idk what's wrong\n\n";
+  // }
   // fout << IsEmpty();
 }
 
@@ -68,14 +69,15 @@ Tokens SyntaxAnalyzer::PopAndGetNextToken(ofstream &fout)
   // fout << IsEmpty() << endl;
   if(!IsEmpty())
   {
+    // fout <<"here\n";
     //Examine the next element
     return tokenLists.front();
   }
   else
   {
-    fout << "Can't pop an empty list\n";
-    fout << "The program will be terminated\n\n";
-    exit(5);
+    cout << "Can't pop an empty list\n";
+    cout << "The program will be terminated\n\n";
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -87,11 +89,11 @@ Tokens SyntaxAnalyzer::PopAndGetNextToken(ofstream &fout)
 bool SyntaxAnalyzer::D(ofstream &fout)
 {
   Tokens currToken;
-  // bool   isDeclarative;
+  bool   isD;
   string lex;
   string tok;
 
-  // isDeclarative = false;
+  isD = false;
   currToken = tokenLists.front();
   lex = currToken.lex;
   tok = currToken.tok;
@@ -114,28 +116,30 @@ bool SyntaxAnalyzer::D(ofstream &fout)
       if(DPrime(tok, lex, fout))
       {
         lex = tokenLists.front().lex;
-        fout << "Here\n";
+        // fout << "Here\n";
         if(lex == ";")
         {
           tokenLists.pop_front();
-          return true;
+          isD = true;
         }
         else
         {
-          fout << "Missing a semicolon. The program will be terminated\n";
-          exit(5);
+          cout << "The next token should be a semicolon. The program will be terminated\n";
+          exit(EXIT_FAILURE);
         }
       }
     }
     else
     {
-      return false;
+      cout << "Missing an identifier. The program will be terminated\n";
+      exit(EXIT_FAILURE);
     }
   }
-  else
-  {
-    return false;
-  }
+  // else
+  // {
+  //   return false;
+  // }
+  return isD;
 }
 
 bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
@@ -143,6 +147,10 @@ bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
   Tokens currToken;
   string tok;
   string lex;
+  bool isDPrime;
+
+  isDPrime = false;
+
   if(curLex == ",")
   {
     fout << "Token: " << curTok << "\t" << "Lexeme: " << curLex << endl;
@@ -160,16 +168,17 @@ bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
     }
     else
     {
-      fout << "Invalid syntax!\n";
-      fout << "The program will be terminated\n\n";
-      exit(2);
+      cout << "Invalid syntax! Should expect an identifier\n";
+      cout << "The program will be terminated\n\n";
+      exit(EXIT_FAILURE);
     }
   }
   else
   {
     fout << "DPrime -> epsilon.\n";
-    return true;
+    isDPrime = true;
   }
+  return isDPrime;
 }
 
 bool SyntaxAnalyzer::Type(string type)
@@ -194,7 +203,9 @@ bool SyntaxAnalyzer::A(ofstream &fout)
   Tokens currToken;
   string tok;
   string lex;
+  bool isA;
 
+  isA = false;
   // cout << "In A\n";
   currToken = tokenLists.front();
   tok = currToken.tok;
@@ -209,45 +220,52 @@ bool SyntaxAnalyzer::A(ofstream &fout)
     currToken = PopAndGetNextToken(fout);
     tok = currToken.tok;
     lex = currToken.lex;
+    // fout << "test " << lex << endl;
     if(lex == "=")
     {
       fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
       tokenLists.pop_front();
+      fout << IsEmpty() << endl;
       if(E(fout))
       {
-        currToken = tokenLists.front();
-        tok = currToken.tok;
-        lex = currToken.lex;
+        // lex = "MISSING_SEMICOLON";
+        if(!IsEmpty())
+        {
+          currToken = tokenLists.front();
+          tok = currToken.tok;
+          lex = currToken.lex;
+        }
         if(lex == ";")
         {
           fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
           tokenLists.pop_front();
-          return true;
+          isA = true;
         }
         else
         {
-          fout << "Expect a ';'. The program will be terminated" << endl;;
+          cout << "Expect a ';'. The program will be terminated" << endl;;
           // return false;
-          exit(5);
+          exit(EXIT_FAILURE);
         }
       }
       else
       {
         fout << "Should include an Expression\n";
-        exit(5);
+        exit(EXIT_FAILURE);
       }
     }
     else
     {
       fout << "Should expect an equal sign\n";
-      exit(5);
+      exit(1);
     }
   }
   //Not an assignment statement
   else
   {
-    return false;
+    isA = false;
   }
+  return isA;
 }
 /***************************************************************************
  * The following methods E, EPrime, T, TPrime, F, and id are representing
@@ -264,10 +282,19 @@ bool SyntaxAnalyzer::E(ofstream &fout)
  Tokens currToken;
  string tok;
  string lex;
+ bool   isE;
 
- currToken = tokenLists.front();
- tok = currToken.tok;
- lex = currToken.lex;
+ isE = false;
+ lex = "EMPTY";
+ if(!IsEmpty())
+ {
+   currToken = tokenLists.front();
+   tok = currToken.tok;
+   lex = currToken.lex;
+ }
+ // currToken = tokenLists.front();
+ // tok = currToken.tok;
+ // lex = currToken.lex;
 
  fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
  fout << "<Expression> -> <Term> <Expression Prime>" << endl;
@@ -276,13 +303,14 @@ bool SyntaxAnalyzer::E(ofstream &fout)
  {
    if(EPrime(fout))
    {
-     return true;
+     isE = true;
    }
  }
  else
  {
-   return false;
+   isE = false;
  }
+ return isE;
 }
 
 bool SyntaxAnalyzer::EPrime(ofstream &fout)
@@ -290,10 +318,19 @@ bool SyntaxAnalyzer::EPrime(ofstream &fout)
   Tokens currToken;
   string tok;
   string lex;
+  bool   isEPrime;
 
-  currToken = tokenLists.front();
-  tok = currToken.tok;
-  lex = currToken.lex;
+  isEPrime = false;
+  lex = "EMPTY";
+  if(!IsEmpty())
+  {
+    currToken = tokenLists.front();
+    tok = currToken.tok;
+    lex = currToken.lex;
+  }
+  // currToken = tokenLists.front();
+  // tok = currToken.tok;
+  // lex = currToken.lex;
   if(lex == "+")
   {
     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
@@ -317,47 +354,64 @@ bool SyntaxAnalyzer::EPrime(ofstream &fout)
   else
   {
     fout << "<EPrime> -> epsilon.\n";
-    return true;
+    isEPrime = true;
   }
+  return isEPrime;
 }
 
 bool SyntaxAnalyzer::T(ofstream &fout)
- {
-   Tokens currToken;
-   string tok;
-   string lex;
+{
+ Tokens currToken;
+ string tok;
+ string lex;
+ bool   isT;
 
+ isT = false;
+ lex = "EMPTY";
+ if(!IsEmpty())
+ {
    currToken = tokenLists.front();
    tok = currToken.tok;
    lex = currToken.lex;
-   if(flag)
+ }
+ // currToken = tokenLists.front();
+ // tok = currToken.tok;
+ // lex = currToken.lex;
+ if(flag)
+ {
+   fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+ }
+ flag = true;
+ fout << "<Term> -> <Factor> <Term Prime>\n";
+ if(F(fout))
+ {
+   if(TPrime(fout))
    {
-     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
-   }
-   flag = true;
-   fout << "<Term> -> <Factor> <Term Prime>\n";
-   if(F(fout))
-   {
-     if(TPrime(fout))
-     {
-       return true;
-     }
-   }
-   else
-   {
-     return false;
+     isT = true;
    }
  }
+ else
+ {
+   isT = false;
+ }
+ return isT;
+}
 
 bool SyntaxAnalyzer::TPrime(ofstream &fout)
 {
   Tokens currToken;
   string tok;
   string lex;
+  bool   isTPrime;
 
-  currToken = tokenLists.front();
-  tok = currToken.tok;
-  lex = currToken.lex;
+  isTPrime = false;
+  lex = "EMPTY";
+  if(!IsEmpty())
+  {
+    currToken = tokenLists.front();
+    tok = currToken.tok;
+    lex = currToken.lex;
+  }
   if(lex == "*")
   {
     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
@@ -381,8 +435,9 @@ bool SyntaxAnalyzer::TPrime(ofstream &fout)
   else
   {
     fout << "<TPrime> -> epsilon.\n";
-    return true;
+    isTPrime = true;
   }
+  return isTPrime;
 }
 
 bool SyntaxAnalyzer::F(ofstream &fout)
@@ -390,10 +445,19 @@ bool SyntaxAnalyzer::F(ofstream &fout)
   Tokens currToken;
   string tok;
   string lex;
+  bool   isF;
 
-  currToken = tokenLists.front();
-  tok = currToken.tok;
-  lex = currToken.lex;
+  isF = false;
+  lex = "EMPTY";
+  if(!IsEmpty())
+  {
+    currToken = tokenLists.front();
+    tok = currToken.tok;
+    lex = currToken.lex;
+  }
+  // currToken = tokenLists.front();
+  // tok = currToken.tok;
+  // lex = currToken.lex;
   if(lex == "(")
   {
     fout << "<Factor> -> ( <Expression> )\n";
@@ -402,43 +466,52 @@ bool SyntaxAnalyzer::F(ofstream &fout)
     //Revisit this part
     if(E(fout))
     {
-      currToken = tokenLists.front();
-      tok = currToken.tok;
-      lex = currToken.lex;
+      lex = "EMPTY";
+      if(!IsEmpty())
+      {
+        currToken = tokenLists.front();
+        tok = currToken.tok;
+        lex = currToken.lex;
+      }
+      // currToken = tokenLists.front();
+      // tok = currToken.tok;
+      // lex = currToken.lex;
       if(lex == ")")
       {
         fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
         tokenLists.pop_front();
-        return true;
+        isF = true;
       }
       else
       {
-        fout << "Should expect ')'\n";
-        exit(5);
+        cout << "Should expect ')'\n";
+        exit(EXIT_FAILURE);
       }
     }
     else
     {
-      fout << "Should expect an Expression\n";
-      exit(5);
+      cout << "Should expect an Expression\n";
+      exit(EXIT_FAILURE);
     }
   }
   else if(tok == "Identifier")
   {
     fout << "<Factor> -> <Identifier>\n";
     tokenLists.pop_front();
-    return true;
+    isF = true;
   }
   else if(tok == "Integer" || tok == "Real")
   {
     fout << "<Factor> -> num\n";
     tokenLists.pop_front();
-    return true;
+    isF =  true;
   }
   else
   {
-    fout << "Wrong syntax! The program will be terminated.\n\n";
+    fout << "Wrong syntax for F! The program will be terminated.\n\n";
     // return false;
-    exit(5);
+    // exit(5);
+    isF = false;
   }
+  return isF;
 }

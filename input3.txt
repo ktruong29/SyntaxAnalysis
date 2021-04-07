@@ -1,3 +1,1 @@
-double avg;
-int num1, num2;
-avg = (num1 + num2)/2;
+int a;
