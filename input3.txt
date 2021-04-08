@@ -1,1 +1,1 @@
-int a;
+while num1 < num2 do a = b + 2 whileend;

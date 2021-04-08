@@ -1,7 +1,40 @@
-Token: Keyword	Lexeme: int
-<Statement> -> <Declarative>
-<Type> -> bool | float | int | double | string | char
+Token: Keyword	Lexeme: while
+while <C> do <S> whileend ;
+Token: Identifier	Lexeme: num1
+<Expression> -> <Term> <Expression Prime>
+<Term> -> <Factor> <Term Prime>
+Token: Identifier	Lexeme: num1
+<Factor> -> <Identifier>
+<TPrime> -> epsilon.
+<EPrime> -> epsilon.
+Token: Operator	Lexeme: <
+<R> -> < | >.
+Token: Identifier	Lexeme: num2
+<Expression> -> <Term> <Expression Prime>
+<Term> -> <Factor> <Term Prime>
+Token: Identifier	Lexeme: num2
+<Factor> -> <Identifier>
+<TPrime> -> epsilon.
+<EPrime> -> epsilon.
+Token: Keyword	Lexeme: do
 Token: Identifier	Lexeme: a
-DPrime -> epsilon.
-It's a declarative statement
+<Statement> -> <Assign>
+<Assign> ->  <Identifier>  = <Expression>
+Token: Operator	Lexeme: =
+Token: Identifier	Lexeme: b
+<Expression> -> <Term> <Expression Prime>
+<Term> -> <Factor> <Term Prime>
+Token: Identifier	Lexeme: b
+<Factor> -> <Identifier>
+<TPrime> -> epsilon.
+Token: Operator	Lexeme: +
+<EPrime> -> + <Term> <EPrime>
+<Term> -> <Factor> <Term Prime>
+Token: Integer	Lexeme: 2
+<Factor> -> num
+<TPrime> -> epsilon.
+<EPrime> -> epsilon.
+Token: Keyword	Lexeme: whileend
+Token: Separator	Lexeme: ;
+It's a while loop
 

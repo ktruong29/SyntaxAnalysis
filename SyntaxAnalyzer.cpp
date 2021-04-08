@@ -2,7 +2,8 @@
 
 SyntaxAnalyzer::SyntaxAnalyzer()
 {
-  flag = false;
+  flag      = false;
+  whileLoop = false;
 }
 
 SyntaxAnalyzer::~SyntaxAnalyzer(){}
@@ -53,7 +54,10 @@ void SyntaxAnalyzer::GrammarCheck(ofstream &fout)
   {
     fout << "It's an assignment statement\n\n";
   }
-
+  else if(W(fout))
+  {
+    fout << "It's a while loop\n\n";
+  }
   // else
   // {
   //   fout << "Idk what's wrong\n\n";
@@ -225,7 +229,7 @@ bool SyntaxAnalyzer::A(ofstream &fout)
     {
       fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
       tokenLists.pop_front();
-      fout << IsEmpty() << endl;
+      // fout << IsEmpty() << endl;
       if(E(fout))
       {
         // lex = "MISSING_SEMICOLON";
@@ -239,6 +243,10 @@ bool SyntaxAnalyzer::A(ofstream &fout)
         {
           fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
           tokenLists.pop_front();
+          isA = true;
+        }
+        else if(whileLoop)
+        {
           isA = true;
         }
         else
@@ -381,7 +389,7 @@ bool SyntaxAnalyzer::T(ofstream &fout)
  {
    fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
  }
- flag = true;
+ // flag = true;
  fout << "<Term> -> <Factor> <Term Prime>\n";
  if(F(fout))
  {
@@ -460,6 +468,7 @@ bool SyntaxAnalyzer::F(ofstream &fout)
   // lex = currToken.lex;
   if(lex == "(")
   {
+    fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
     fout << "<Factor> -> ( <Expression> )\n";
     tokenLists.pop_front();
     flag = false;
@@ -496,12 +505,14 @@ bool SyntaxAnalyzer::F(ofstream &fout)
   }
   else if(tok == "Identifier")
   {
+    fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
     fout << "<Factor> -> <Identifier>\n";
     tokenLists.pop_front();
     isF = true;
   }
   else if(tok == "Integer" || tok == "Real")
   {
+    fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
     fout << "<Factor> -> num\n";
     tokenLists.pop_front();
     isF =  true;
@@ -515,3 +526,182 @@ bool SyntaxAnalyzer::F(ofstream &fout)
   }
   return isF;
 }
+
+/***************************************************************************
+ * The following method S (Statement) represents the productions:
+ *  <S>       -> <A> | <D> | <W> ;  W - while loop
+ **************************************************************************/
+ bool SyntaxAnalyzer::S(ofstream &fout)
+ {
+   bool isS;
+   isS = false;
+   whileLoop = true;
+   if(A(fout) || D(fout) || W(fout))
+   {
+     isS = true;
+   }
+   whileLoop = false;
+   return isS;
+ }
+
+ /***************************************************************************
+  * The following methods W, C, and R represent the productions:
+  *  <W>      -> 'while' <C> 'do' <S> 'whileend' ;
+  *  <C>      -> <E> <R> <E> | <E>
+  *  <R>      -> < | >
+  **************************************************************************/
+  bool SyntaxAnalyzer::W(ofstream &fout)
+  {
+    Tokens currToken;
+    string lex;
+    string tok;
+    bool   isW;
+
+    isW = false;
+    //Debugging - if the list is empty, then lex will have string value of "EMPTY"
+    //If the list is not empty -> lex will be substitute with the current lexeme
+    lex = "EMPTY";
+    if(!IsEmpty())
+    {
+      currToken = tokenLists.front();
+      tok = currToken.tok;
+      lex = currToken.lex;
+    }
+    if(lex == "while")
+    {
+      fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+      fout << "while <C> do <S> whileend ;\n";
+      tokenLists.pop_front();
+      if(C(fout))
+      {
+        //Debugging - if the list is empty, then lex will have string value of "EMPTY"
+        //If the list is not empty -> lex will be substitute with the current lexeme
+        lex = "EMPTY";
+        if(!IsEmpty())
+        {
+          currToken = tokenLists.front();
+          tok = currToken.tok;
+          lex = currToken.lex;
+        }
+        if(lex == "do")
+        {
+          fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+          tokenLists.pop_front();
+          if(S(fout))
+          {
+            //Debugging - if the list is empty, then lex will have string value of "EMPTY"
+            //If the list is not empty -> lex will be substitute with the current lexeme
+            lex = "EMPTY";
+            if(!IsEmpty())
+            {
+              currToken = tokenLists.front();
+              tok = currToken.tok;
+              lex = currToken.lex;
+            }
+            if(lex == "whileend")
+            {
+              fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+              tokenLists.pop_front();
+              //Debugging - if the list is empty, then lex will have string value of "EMPTY"
+              //If the list is not empty -> lex will be substitute with the current lexeme
+              // lex = "EMPTY";
+              if(!IsEmpty())
+              {
+                currToken = tokenLists.front();
+                tok = currToken.tok;
+                lex = currToken.lex;
+              }
+              if(lex == ";")
+              {
+                fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+                tokenLists.pop_front();
+                isW = true;
+              }
+              else
+              {
+                cout << "Should expect a ;. The program will be terminated.\n";
+                exit(EXIT_FAILURE);
+              }
+            }
+            else
+            {
+              cout << "Should expect 'whileend'. The program will be terminated.\n";
+              exit(EXIT_FAILURE);
+            }
+          }
+        }
+        else
+        {
+          cout << "Should expect 'do' ;. The program will be terminated.\n";
+          exit(EXIT_FAILURE);
+        }
+      }
+    }
+    return isW;
+  }
+
+  bool SyntaxAnalyzer::C(ofstream &fout)
+  {
+    bool isC;
+
+    isC = false;
+    if(E(fout))
+    {
+      if(CPrime(fout))
+      {
+        isC = true;
+      }
+    }
+    return isC;
+  }
+
+  bool SyntaxAnalyzer::CPrime(ofstream &fout)
+  {
+    bool isCPrime;
+
+    isCPrime = false;
+    if(R(fout))
+    {
+      if(E(fout))
+      {
+        isCPrime = true;
+      }
+    }
+    else
+    {
+      isCPrime = true;
+    }
+    return isCPrime;
+  }
+
+  bool SyntaxAnalyzer::R(ofstream &fout)
+  {
+    Tokens currToken;
+    string lex;
+    string tok;
+    bool   isR;
+
+    isR = false;
+    //Debugging - if the list is empty, then lex will have string value of "EMPTY"
+    //If the list is not empty -> lex will be substitute with the current lexeme
+    lex = "EMPTY";
+    if(!IsEmpty())
+    {
+      currToken = tokenLists.front();
+      tok = currToken.tok;
+      lex = currToken.lex;
+    }
+    if(lex == "<" || lex == ">")
+    {
+      fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+      fout << "<R> -> < | >.\n";
+      tokenLists.pop_front();
+      isR = true;
+    }
+    // else
+    // {
+    //   cout << "Should expect a > or <. The program will be terminated.\n";
+    //   exit(EXIT_FAILURE);
+    // }
+    return isR;
+  }

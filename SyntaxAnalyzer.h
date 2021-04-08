@@ -28,6 +28,7 @@ class SyntaxAnalyzer
 
   private:
     bool flag;
+    bool whileLoop;
     list<Tokens> tokenLists;
     Tokens PopAndGetNextToken(ofstream &fout);
     /***************************************************************************
@@ -54,8 +55,24 @@ class SyntaxAnalyzer
      bool TPrime(ofstream &fout);
      bool F(ofstream &fout);
      /***************************************************************************
-      * The following methods A representing the productions:
+      * The following method A represents the productions:
       *  <A>       -> id = <E> ;
       **************************************************************************/
     bool A(ofstream &fout);
+    /***************************************************************************
+     * The following method S (Statement) represents the productions:
+     *  <S>       -> <A> | <D> | <W> ;  W - while loop
+     **************************************************************************/
+     bool S(ofstream &fout);
+     /***************************************************************************
+      * The following methods W, C, and R represent the productions:
+      *  <W>      -> 'while' <C> 'do' <S> 'whileend' ;
+      *  <C>      -> <E> <CPrime>
+      *  <CPrime> -> <R> <E> | epsilon
+      *  <R>      -> < | >
+      **************************************************************************/
+      bool W(ofstream &fout);
+      bool C(ofstream &fout);
+      bool CPrime(ofstream &fout);
+      bool R(ofstream &fout);
 };
