@@ -58,7 +58,7 @@ class SyntaxAnalyzer
       * The following method A represents the productions:
       *  <A>       -> id = <E> ;
       **************************************************************************/
-    bool A(ofstream &fout);
+     bool A(ofstream &fout);
     /***************************************************************************
      * The following method S (Statement) represents the productions:
      *  <S>       -> <A> | <D> | <W> ;  W - while loop
@@ -75,4 +75,12 @@ class SyntaxAnalyzer
       bool C(ofstream &fout);
       bool CPrime(ofstream &fout);
       bool R(ofstream &fout);
+      /***************************************************************************
+       * The following method I represent the productions:
+       *  <I> -> 'if' <C> 'then' <S> 'else' <S> 'endif';
+       *  <C>      -> <E> <CPrime>
+       *  <CPrime> -> <R> <E> | epsilon
+       *  <A>       -> id = <E> ;
+       **************************************************************************/
+       bool I(ofstream &fout);
 };
