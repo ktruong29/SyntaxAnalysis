@@ -127,6 +127,7 @@ bool SyntaxAnalyzer::D(ofstream &fout)
         // fout << "Here\n";
         if(lex == ";")
         {
+          fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
           tokenLists.pop_front();
           isD = true;
         }
@@ -711,12 +712,18 @@ bool SyntaxAnalyzer::R(ofstream &fout)
     tok = currToken.tok;
     lex = currToken.lex;
   }
-  if(lex == "<" || lex == ">")
+  if(lex == "<" || lex == ">" || lex == ">=" || lex == "<=" || lex == "<>" || lex == "==")
   {
     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
-    fout << "<R> -> < | >.\n";
+    fout << "<R> -> < | > | >= | <= | <> | ==\n";
     tokenLists.pop_front();
     isR = true;
+  }
+  //If incorrect compound operators (e.g. >< )
+  else if(tok == "Compound Operator")
+  {
+    cout << "Incorrect compound operator. The program will be terminated.\n";
+    exit(EXIT_FAILURE);
   }
   return isR;
 }

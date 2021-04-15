@@ -72,18 +72,22 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 {
   // index                          0  1  2  3  4  5  6  7  8  9
   //                               l  d  O  S  !  _ sp  .  $  Other
-  const int STATE_TABLE[12][10] = {{1, 4, 8, 9, 10, 3, 3, 3, 3, 3},  //0
-                                   {1, 1, 2, 2, 3, 1, 2, 3, 1, 2},   //1
+  const int STATE_TABLE[16][10] = {{1, 4, 8, 9, 10, 3, 3, 3, 3, 3},  //0
+                                   {1, 1, 8, 2, 3, 1, 2, 3, 1, 2},   //1
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //2
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //3
-                                   {3, 4, 5, 5, 3, 3, 5, 6, 3, 5},   //4
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //5
+                                   {3, 4, 5, 5, 3, 3, 5, 6, 3, 3},   //4
+                                   {0, 0, 8, 0, 0, 0, 0, 0, 0, 0},   //5
                                    {3, 6, 7, 7, 3, 3, 7, 3, 3, 3},   //6
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //7
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //8
+                                   {0, 0, 8, 0, 0, 0, 0, 0, 0, 0},   //7
+                                   {1, 4, 12, 3, 3, 3, 13, 3, 3, 3},   //8
                                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},   //9
                                    {10, 10, 10, 10, 11, 10, 10, 10, 10, 10},  //10
-                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}    //11
+                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},    //11
+                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},    //12
+                                   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},     //13
+                                   {1, 4, 12, 3, 3, 3, 13, 3, 3, 3},  //14
+                                   {1, 4, 12, 3, 3, 3, 13, 3, 3, 3}   //15
                                   };
   ifstream fin;
   char c;
@@ -91,9 +95,9 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
   int row;
   int col;
   int state;
-  string op;
+  // string op;
   string sep;
-  op  = "";
+  // op  = "";
   sep = "";
   lex = "";
   row   = 0;
@@ -118,6 +122,11 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         //Appending a char into the string buffer
 
         case 1:
+          if(!lex.empty() && IsOperator(lex[0]))
+          {
+            synAnalyzer.Push("Operator", lex);
+            lex = "";
+          }
           lex += c; // lex = lex + c   lex = int
             break;
 
@@ -125,34 +134,19 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
           //Comparing keywords vs. identifiers
           if(IsKeyword(lex))
           {
-            // fout << "Token: Keyword" <<  "\t" << "Lexeme: " << lex << endl;
             synAnalyzer.Push("Keyword", lex);
           }
           else
           {
-            // fout << "Token: Identifier" <<  "\t" << "Lexeme: " << lex << endl;
             synAnalyzer.Push("Identifier", lex);
           }
-          //Comparing the current character in the buffer (operator or separator?)
+          //Comparing the current character in the buffer (separator?)
           if(IsSeparator(c))
           {
-            // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
             sep += c;
             synAnalyzer.Push("Separator", sep);
             sep = "";
           }
-          else if(IsOperator(c))
-          {
-            // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
-            op += c;
-            synAnalyzer.Push("Operator", op);
-            op = "";
-          }
-          // if(c == ';')
-          // {
-          //   // synAnalyzer.PrintAll();
-          //   synAnalyzer.GrammarCheck();
-          // }
           //Clear the string buffer for the next input
           lex = "";
           state = 0;
@@ -171,83 +165,87 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
         //Appending digit into the string buffer
         case 4:
+          if(!lex.empty() && IsOperator(lex[0]))
+          {
+            synAnalyzer.Push("Operator", lex);
+            lex = "";
+          }
           lex += c;
             break;
 
         case 5:
-          // fout << "Token: Integer" <<  "\t" << "Lexeme: " << lex << endl;
           synAnalyzer.Push("Integer", lex);
+          lex = "";
+          state = 0;
           //Comparing the current character in the buffer (operators or separators?)
           if(IsSeparator(c) && c != '.')
           {
-            // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
             sep += c;
             synAnalyzer.Push("Separator", sep);
             sep = "";
+            state = 0;
           }
           else if(IsOperator(c))
           {
-            // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
-            op += c;
-            synAnalyzer.Push("Operator", op);
-            op = "";
+            lex += c;
+            state = 8;
           }
-          // if(c == ';')
-          // {
-          //   synAnalyzer.GrammarCheck();
-          // }
-          lex = "";
-          state = 0;
             break;
 
-        //For real and float numbers
+        //Appending digits
         case 6:
+          if(!lex.empty() && IsOperator(lex[0]))
+          {
+            synAnalyzer.Push("Operator", lex);
+            lex = "";
+          }
           lex += c;
             break;
 
         //Real, float numbers
         case 7:
-          // fout << "Token: Real" <<  "\t" << "Lexeme: " << lex << endl;
           synAnalyzer.Push("Real", lex);
+          lex = "";
+          state = 0;
           if(IsSeparator(c))
           {
-            // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
             sep += c;
             synAnalyzer.Push("Separator", sep);
             sep = "";
+            state = 0;
           }
           else if(IsOperator(c))
           {
-            // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
-            op += c;
-            synAnalyzer.Push("Operator", op);
-            op = "";
+            lex += c;
+            state = 8;
           }
-          // if(c == ';')
-          // {
-          //   synAnalyzer.GrammarCheck();
-          // }
           lex = "";
           state = 0;
             break;
 
         case 8:
-          // fout << "Token: Operator" <<  "\t" << "Lexeme: " << c << endl;
-          op += c;
-          synAnalyzer.Push("Operator", op);
-          op = "";
-          state = 0;
+          if(!lex.empty())
+          {
+            if(IsKeyword(lex))
+            {
+              synAnalyzer.Push("Keyword", lex);
+            }
+            else
+            {
+              synAnalyzer.Push("Identifier", lex);
+            }
+            lex = "";
+          }
+          if(IsOperator(c))
+          {
+            lex += c;
+          }
             break;
 
         case 9:
-          // fout << "Token: Separator" <<  "\t" << "Lexeme: " << c << endl;
           sep += c;
           synAnalyzer.Push("Separator", sep);
           sep = "";
-          // if(c == ';')
-          // {
-          //   synAnalyzer.GrammarCheck();
-          // }
           state = 0;
             break;
 
@@ -257,6 +255,47 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
         case 11:
           state = 0;
             break;
+
+        case 12:
+          lex += c;
+          // fout << "COMPOUND OPERATOR\t\t" << "=\t\t" << lex << endl;
+          synAnalyzer.Push("Compound Operator", lex);
+          lex = "";
+          state = 0;
+            break;
+
+        case 13:
+          // fout << "OPERATOR\t\t" << "=\t\t" << lex << endl;
+          synAnalyzer.Push("Operator", lex);
+          lex = "";
+          state = 0;
+            break;
+
+        case 14:
+        if(!lex.empty())
+        {
+          // fout << "INTEGER\t\t" << "=\t\t" << lex << endl;
+          synAnalyzer.Push("Integer", lex);
+          lex = "";
+        }
+        if(IsOperator(c))
+        {
+          lex += c;
+        }
+          break;
+
+        case 15:
+        if(!lex.empty())
+        {
+          // fout << "REAL\t\t" << "=\t\t" << lex << endl;
+          synAnalyzer.Push("Real", lex);
+          lex = "";
+        }
+        if(IsOperator(c))
+        {
+          lex += c;
+        }
+          break;
 
        default:
           state = 0;

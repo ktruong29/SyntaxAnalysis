@@ -1,2 +1,1 @@
-while num1 < num2 do a = b + 2 whileend;
-if a > 2 then b = (c+d)*3 else b = (c+d)/2 endif;
+while x<=20.5 do x = x - 1 whileend;

@@ -1,115 +1,12 @@
 Token: Keyword	Lexeme: while
 while <C> do <S> whileend ;
-Token: Identifier	Lexeme: num1
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Operator	Lexeme: <
-<R> -> < | >.
-Token: Identifier	Lexeme: num2
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Keyword	Lexeme: do
-Token: Identifier	Lexeme: a
-<Statement> -> <Assign>
-<Assign> ->  <Identifier>  = <Expression>
-Token: Operator	Lexeme: =
-Token: Identifier	Lexeme: b
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-Token: Operator	Lexeme: +
-<EPrime> -> + <Term> <EPrime>
-Token: Integer	Lexeme: 2
-<Term> -> <Factor> <Term Prime>
-Token: Integer	Lexeme: 2
-<Factor> -> num
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Keyword	Lexeme: whileend
-Token: Separator	Lexeme: ;
-It's a while loop
-
-Token: Keyword	Lexeme: if
 Token: Identifier	Lexeme: a
 <Expression> -> <Term> <Expression Prime>
 <Term> -> <Factor> <Term Prime>
 <Factor> -> <Identifier>
 <TPrime> -> epsilon.
 <EPrime> -> epsilon.
-Token: Operator	Lexeme: >
-<R> -> < | >.
-Token: Integer	Lexeme: 2
+Token: Compound Operator	Lexeme: >=
+<R> -> < | > | >= | <= | <> | ==
+Token: Integer	Lexeme: 5
 <Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> num
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Keyword	Lexeme: then
-Token: Identifier	Lexeme: b
-<Statement> -> <Assign>
-<Assign> ->  <Identifier>  = <Expression>
-Token: Operator	Lexeme: =
-Token: Separator	Lexeme: (
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> ( <Expression> )
-Token: Identifier	Lexeme: c
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-Token: Operator	Lexeme: +
-<EPrime> -> + <Term> <EPrime>
-Token: Identifier	Lexeme: d
-<Term> -> <Factor> <Term Prime>
-Token: Identifier	Lexeme: d
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Separator	Lexeme: )
-Token: Operator	Lexeme: *
-<TPrime> -> * <Factor> <TPrime>
-Token: Integer	Lexeme: 3
-<Factor> -> num
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Keyword	Lexeme: else
-Token: Identifier	Lexeme: b
-<Statement> -> <Assign>
-<Assign> ->  <Identifier>  = <Expression>
-Token: Operator	Lexeme: =
-Token: Separator	Lexeme: (
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> ( <Expression> )
-Token: Identifier	Lexeme: c
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-Token: Operator	Lexeme: +
-<EPrime> -> + <Term> <EPrime>
-Token: Identifier	Lexeme: d
-<Term> -> <Factor> <Term Prime>
-Token: Identifier	Lexeme: d
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Separator	Lexeme: )
-Token: Operator	Lexeme: /
-<TPrime> -> / <Factor> <TPrime>
-Token: Integer	Lexeme: 2
-<Factor> -> num
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Keyword	Lexeme: endif
-Token: Separator	Lexeme: ;
-It's an if statement
-
