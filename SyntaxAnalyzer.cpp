@@ -62,6 +62,10 @@ else if(I(fout))
 {
   fout << "It's an if statement\n\n";
 }
+else if(B(fout))
+{
+  fout << "It's a for loop statement\n\n";
+}
 else
 {
   fout << "Idk what's wrong\n\n";
@@ -216,6 +220,7 @@ bool SyntaxAnalyzer::A(ofstream &fout)
   tok = currToken.tok;
   lex = currToken.lex;
   // cout << tok << ", " << lex << endl;
+  // fout << "Here\n";
   if(tok == "Identifier")
   {
     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
@@ -557,7 +562,7 @@ bool SyntaxAnalyzer::S(ofstream &fout)
  bool isS;
  isS = false;
  whileLoop = true;
- if(A(fout) || D(fout) || W(fout) || I(fout))
+ if(A(fout) || D(fout) || W(fout) || I(fout) || B(fout))
  {
    isS = true;
  }
@@ -838,4 +843,113 @@ bool SyntaxAnalyzer::I(ofstream &fout)
     isI = false;
   }
   return isI;
+}
+
+bool SyntaxAnalyzer::B(ofstream &fout)
+{
+  Tokens currToken;
+  string lex;
+  string tok;
+  bool   isF;
+
+  isF = false;
+  lex = "EMPTY";
+  if(!IsEmpty())
+  {
+    currToken = tokenLists.front();
+    tok = currToken.tok;
+    lex = currToken.lex;
+  }
+  if(lex == "for")
+  {
+    fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+    fout << "begin <S> <MS> end ;\n";
+    tokenLists.pop_front();
+    // fout << "Here1\n";
+    if(S(fout))
+    {
+      // fout << "Here2\n";
+      if(MS(fout))
+      {
+        lex = "EMPTY";
+        if(!IsEmpty())
+        {
+          currToken = tokenLists.front();
+          tok = currToken.tok;
+          lex = currToken.lex;
+        }
+        if(lex == "endfor")
+        {
+          fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+          tokenLists.pop_front();
+          lex = "EMPTY";
+          if(!IsEmpty())
+          {
+            currToken = tokenLists.front();
+            tok = currToken.tok;
+            lex = currToken.lex;
+          }
+          if(lex == ";")
+          {
+            fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+            tokenLists.pop_front();
+            isF = true;
+          }
+          else
+          {
+            cout << "Should expect a semicolon.\n";
+          }
+        }
+        else
+        {
+          cout << "Should expect an 'endfor'.\n";
+        }
+      }
+      else
+      {
+        cout << "Shoud expect a more statement.\n";
+      }
+    }
+    else
+    {
+      cout << "Should expect a statement.\n";
+    }
+  }
+  return isF;
+}
+
+bool SyntaxAnalyzer::MS(ofstream &fout)
+{
+  Tokens currToken;
+  string lex;
+  string tok;
+  bool   isMS;
+
+  // isMS = false;
+  // lex = "EMPTY";
+  // if(!IsEmpty())
+  // {
+  //   currToken = tokenLists.front();
+  //   tok = currToken.tok;
+  //   lex = currToken.lex;
+  // }
+  // if(lex == ";")
+  // {
+  //   fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+  //   fout << "<MS> -> ; <S> <MS>\n";
+  //   tokenLists.pop_front();
+    if(S(fout))
+    {
+      if(MS(fout))
+      {
+        isMS = true;
+      }
+    }
+  // }
+  else
+  {
+    fout << "<MS> -> epsilon\n";
+    isMS = true;
+  }
+  return isMS;
 }

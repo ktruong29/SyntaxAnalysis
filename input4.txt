@@ -1,1 +1,1 @@
-if x == num1 then num1 = num2 else num1 = num3 endif;
+if a >=2 then b = c+2 else b = c-2 endif;

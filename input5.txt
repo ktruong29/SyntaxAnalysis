@@ -1,1 +1,1 @@
-while a >= 5 int s = 2 whileend;
+while a >= 5 do s = a+2 whileend;

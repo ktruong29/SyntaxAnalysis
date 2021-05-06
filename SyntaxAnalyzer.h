@@ -77,10 +77,17 @@ class SyntaxAnalyzer
       bool R(ofstream &fout);
       /***************************************************************************
        * The following method I represent the productions:
-       *  <I> -> 'if' <C> 'then' <S> 'else' <S> 'endif';
-       *  <C>      -> <E> <CPrime>
-       *  <CPrime> -> <R> <E> | epsilon
+       *  <I>       -> 'if' <C> 'then' <S> 'else' <S> 'endif';
+       *  <C>       -> <E> <CPrime>
+       *  <CPrime>  -> <R> <E> | epsilon
        *  <A>       -> id = <E> ;
        **************************************************************************/
        bool I(ofstream &fout);
+      /***************************************************************************
+      * The following method F represent the productions:
+      *  <F>  -> 'begin' <S> <MS> 'end';
+      *  <MS> -> ; <S> <MS> | epsilon
+      **************************************************************************/
+      bool B(ofstream &fout);
+      bool MS(ofstream &fout);
 };
