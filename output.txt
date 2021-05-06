@@ -1,4 +1,4 @@
-Token: Keyword	Lexeme: for
+Token: Keyword	Lexeme: begin
 begin <S> <MS> end ;
 Token: Keyword	Lexeme: int
 <Statement> -> <Declarative>
@@ -10,32 +10,22 @@ Token: Identifier	Lexeme: i
 <Statement> -> <Assign>
 <Assign> ->  <Identifier>  = <Expression>
 Token: Operator	Lexeme: =
-Token: Integer	Lexeme: 0
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> num
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Separator	Lexeme: ;
-Token: Identifier	Lexeme: a
-<Statement> -> <Assign>
-<Assign> ->  <Identifier>  = <Expression>
-Token: Operator	Lexeme: =
-Token: Identifier	Lexeme: b
+Token: Identifier	Lexeme: i
 <Expression> -> <Term> <Expression Prime>
 <Term> -> <Factor> <Term Prime>
 <Factor> -> <Identifier>
 <TPrime> -> epsilon.
 Token: Operator	Lexeme: +
 <EPrime> -> + <Term> <EPrime>
-Token: Identifier	Lexeme: c
+Token: Integer	Lexeme: 2
 <Term> -> <Factor> <Term Prime>
-Token: Identifier	Lexeme: c
-<Factor> -> <Identifier>
+Token: Integer	Lexeme: 2
+<Factor> -> num
 <TPrime> -> epsilon.
 <EPrime> -> epsilon.
-<MS> -> epsilon
-Token: Keyword	Lexeme: endfor
 Token: Separator	Lexeme: ;
-It's a for loop statement
+<MS> -> epsilon
+Token: Keyword	Lexeme: end
+Token: Separator	Lexeme: ;
+It's a begin statement
 

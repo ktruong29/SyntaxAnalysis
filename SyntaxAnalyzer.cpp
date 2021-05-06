@@ -64,7 +64,7 @@ else if(I(fout))
 }
 else if(B(fout))
 {
-  fout << "It's a for loop statement\n\n";
+  fout << "It's a begin statement\n\n";
 }
 else
 {
@@ -860,7 +860,7 @@ bool SyntaxAnalyzer::B(ofstream &fout)
     tok = currToken.tok;
     lex = currToken.lex;
   }
-  if(lex == "for")
+  if(lex == "begin")
   {
     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
     fout << "begin <S> <MS> end ;\n";
@@ -878,7 +878,7 @@ bool SyntaxAnalyzer::B(ofstream &fout)
           tok = currToken.tok;
           lex = currToken.lex;
         }
-        if(lex == "endfor")
+        if(lex == "end")
         {
           fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
           tokenLists.pop_front();
@@ -898,21 +898,25 @@ bool SyntaxAnalyzer::B(ofstream &fout)
           else
           {
             cout << "Should expect a semicolon.\n";
+            exit(EXIT_FAILURE);
           }
         }
         else
         {
-          cout << "Should expect an 'endfor'.\n";
+          cout << "Should expect an 'end'.\n";
+          exit(EXIT_FAILURE);
         }
       }
       else
       {
         cout << "Shoud expect a more statement.\n";
+        exit(EXIT_FAILURE);
       }
     }
     else
     {
       cout << "Should expect a statement.\n";
+      exit(EXIT_FAILURE);
     }
   }
   return isF;

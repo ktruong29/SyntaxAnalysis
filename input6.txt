@@ -1,1 +1,1 @@
-for int i; i=0; a=b+c endfor;
+begin int i; i=i+2; end;
