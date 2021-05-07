@@ -1,31 +1,28 @@
-Token: Keyword	Lexeme: begin
-begin <S> <MS> end ;
 Token: Keyword	Lexeme: int
 <Statement> -> <Declarative>
 <Type> -> bool | float | int | double | string | char
-Token: Identifier	Lexeme: i
+Token: Identifier	Lexeme: a
 DPrime -> epsilon.
 Token: Separator	Lexeme: ;
-Token: Identifier	Lexeme: i
-<Statement> -> <Assign>
-<Assign> ->  <Identifier>  = <Expression>
-Token: Operator	Lexeme: =
-Token: Identifier	Lexeme: i
-<Expression> -> <Term> <Expression Prime>
-<Term> -> <Factor> <Term Prime>
-<Factor> -> <Identifier>
-<TPrime> -> epsilon.
-Token: Operator	Lexeme: +
-<EPrime> -> + <Term> <EPrime>
-Token: Integer	Lexeme: 2
-<Term> -> <Factor> <Term Prime>
-Token: Integer	Lexeme: 2
-<Factor> -> num
-<TPrime> -> epsilon.
-<EPrime> -> epsilon.
-Token: Separator	Lexeme: ;
-<MS> -> epsilon
-Token: Keyword	Lexeme: end
-Token: Separator	Lexeme: ;
-It's a begin statement
+It's a declarative statement
 
+Token: Identifier	Lexeme: double
+<Statement> -> <Declarative>
+<Type> -> bool | float | int | double | string | char
+Token: Identifier	Lexeme: b
+Token: Separator	Lexeme: ,
+<D_Prime> -> <,> <I> <D_Prime> | epsilon
+Token: Identifier	Lexeme: c
+Token: Separator	Lexeme: ,
+<D_Prime> -> <,> <I> <D_Prime> | epsilon
+Token: Identifier	Lexeme: d
+DPrime -> epsilon.
+Token: Separator	Lexeme: ;
+It's a declarative statement
+
+SYMBOL TABLE
+Identifier   Memory Location     Type      
+a            5000                int       
+b            5001                double    
+c            5002                double    
+d            5003                double    

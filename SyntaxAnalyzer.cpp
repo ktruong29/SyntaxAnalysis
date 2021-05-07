@@ -4,6 +4,8 @@ SyntaxAnalyzer::SyntaxAnalyzer()
 {
   flag      = false;
   whileLoop = false;
+  memLocation = 5000;
+  type = "None";
 }
 
 SyntaxAnalyzer::~SyntaxAnalyzer(){}
@@ -32,7 +34,7 @@ bool SyntaxAnalyzer::IsEmpty()
 
 void SyntaxAnalyzer::PrintAll(ofstream &fout)
 {
-  fout << tokenLists.size() << endl;
+  // fout << tokenLists.size() << endl;
   list<Tokens>::iterator it;
   for(it = tokenLists.begin(); it != tokenLists.end(); it++)
   {
@@ -73,6 +75,26 @@ else
 // fout << IsEmpty();
 }
 
+void SyntaxAnalyzer::PrintSymbolTable(ofstream &fout)
+{
+  if(!symbolTable.empty())
+  {
+    list<VarMemory>::iterator it;
+    fout << "SYMBOL TABLE\n";
+    fout << left << setw(13) << "Identifier"
+                 << setw(20) << "Memory Location"
+                 << setw(10) << "Type" << endl;
+    for(it = symbolTable.begin(); it != symbolTable.end(); it++)
+    {
+      fout       << setw(13) <<  it->lex
+                 << setw(20) <<  it->memoryLocation
+                 << setw(10) <<  it->tok << endl;
+    }
+    fout << right;
+  }
+  // fout << endl;
+}
+
 Tokens SyntaxAnalyzer::PopAndGetNextToken(ofstream &fout)
 {
 //Pop the already examined element of the list
@@ -104,6 +126,8 @@ bool SyntaxAnalyzer::D(ofstream &fout)
   bool   isD;
   string lex;
   string tok;
+  //Storing the variable information needed for the symbol table
+  VarMemory currVar;
 
   isD = false;
   currToken = tokenLists.front();
@@ -114,13 +138,24 @@ bool SyntaxAnalyzer::D(ofstream &fout)
     fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
     fout << "<Statement> -> <Declarative>" << endl;
     fout << "<Type> -> bool | float | int | double | string | char" << endl;
+    currVar.tok = lex;
+    type = currVar.tok;
     //Pop the token <Type> of the list and get the next token
     currToken = PopAndGetNextToken(fout);
     lex = currToken.lex;
     tok = currToken.tok;
     if(tok == "Identifier")
     {
+      //Storing the variable information needed for the symbol table
+      // VarMemory currVar;
       fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+      //Extract the variable information and store it in VarMemory struct type
+      currVar.lex = lex;
+      currVar.memoryLocation = memLocation;
+      symbolTable.push_back(currVar);
+      //Increment the memLocation var for the next input
+      memLocation++;
+
       //Pop the token <ID> of the list and get the next token
       currToken = PopAndGetNextToken(fout);
       lex = currToken.lex;
@@ -157,6 +192,7 @@ bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
   string tok;
   string lex;
   bool isDPrime;
+  VarMemory currVar;
 
   isDPrime = false;
 
@@ -170,6 +206,14 @@ bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
     if(tok == "Identifier")
     {
       fout << "Token: " << tok << "\t" << "Lexeme: " << lex << endl;
+      //Extract the variable information and store it in VarMemory struct type
+      currVar.tok = type;
+      currVar.lex = lex;
+      currVar.memoryLocation = memLocation;
+      symbolTable.push_back(currVar);
+      //Increment the memLocation var for the next input
+      memLocation++;
+
       currToken = PopAndGetNextToken(fout);
       lex = currToken.lex;
       tok = currToken.tok;

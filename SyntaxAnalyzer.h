@@ -6,12 +6,20 @@
 #include <fstream>
 #include <stdlib.h>
 #include <list>
+#include <iomanip>
 using namespace std;
 
 struct Tokens
 {
   string lex;
   string tok;
+};
+
+struct VarMemory
+{
+  string lex;
+  string tok;
+  int    memoryLocation;
 };
 
 class SyntaxAnalyzer
@@ -25,11 +33,16 @@ class SyntaxAnalyzer
     bool IsEmpty();
     void PrintAll(ofstream &fout);
     void GrammarCheck(ofstream &fout);
+    void PrintSymbolTable(ofstream &fout);
 
   private:
+    int memLocation;
     bool flag;
     bool whileLoop;
     list<Tokens> tokenLists;
+    list<VarMemory> symbolTable;
+    string type; //To store the type of multiple declarative statements to
+                 //insert into the symbol table e.g., int num1, num2, num3;
     Tokens PopAndGetNextToken(ofstream &fout);
     /***************************************************************************
      * The following methods D, DPrime, and Type are representing the productions:

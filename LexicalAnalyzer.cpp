@@ -304,6 +304,8 @@ void LexicalAnalyzer::LexAnalyzer(string fileName, ofstream &fout)
 
       row = state;
     }//END while(!fin.eof())
+    //Print the symbol table
+    synAnalyzer.PrintSymbolTable(fout);
     fin.close();
   }//END if(fin.is_open())
   else
