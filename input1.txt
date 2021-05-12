@@ -1,2 +1,2 @@
 int a ;
-double b, c, d ;
+double b, c, d;

@@ -152,6 +152,16 @@ bool SyntaxAnalyzer::D(ofstream &fout)
       //Extract the variable information and store it in VarMemory struct type
       currVar.lex = lex;
       currVar.memoryLocation = memLocation;
+      //Check if the variable already exists in the symbol table
+      list<VarMemory>::iterator it;
+      for(it = symbolTable.begin(); it != symbolTable.end(); it++)
+      {
+        if(it->lex == currVar.lex)
+        {
+          cout << "Error! The variable already exists in the symbol table.\n";
+          exit(EXIT_FAILURE);
+        }
+      }
       symbolTable.push_back(currVar);
       //Increment the memLocation var for the next input
       memLocation++;
@@ -210,6 +220,16 @@ bool SyntaxAnalyzer::DPrime(string curTok, string curLex, ofstream &fout)
       currVar.tok = type;
       currVar.lex = lex;
       currVar.memoryLocation = memLocation;
+      //Check if the variable already exists in the symbol table
+      list<VarMemory>::iterator it;
+      for(it = symbolTable.begin(); it != symbolTable.end(); it++)
+      {
+        if(it->lex == currVar.lex)
+        {
+          cout << "Error! The variable already exists in the symbol table.\n";
+          exit(EXIT_FAILURE);
+        }
+      }
       symbolTable.push_back(currVar);
       //Increment the memLocation var for the next input
       memLocation++;
